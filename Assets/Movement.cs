@@ -35,6 +35,7 @@ public class Movement : MonoBehaviour
     float verticalInput;
 
     Vector3 moveDirection;
+    Vector3 extragravity;
 
     Rigidbody rb;
 
@@ -51,6 +52,8 @@ public class Movement : MonoBehaviour
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, Ground);
 
+        
+
         MyInput();
         SpeedControl();
 
@@ -59,6 +62,7 @@ public class Movement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
+            rb.AddForce(Vector3.down * 2, ForceMode.Acceleration); 
     }
 
     private void FixedUpdate()
@@ -141,6 +145,6 @@ public class Movement : MonoBehaviour
     private void Dash()
     {
         if (!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 50f * airMultiplier, ForceMode.Force);
+            rb.AddForce(Vector3.forward * 5, ForceMode.Impulse);
     }
 }
