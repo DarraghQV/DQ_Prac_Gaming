@@ -12,7 +12,7 @@ public class RotateShooter : MonoBehaviour
 
     void Update()
     {
-        if (!grappling.IsGrappling())
+        if (!grappling.IsGrappling(null))
         {
             desiredRotation = transform.parent.rotation;
         }
