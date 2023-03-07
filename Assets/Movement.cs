@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
     public Transform LeftShooterTip, RightShooterTip;
     [Header("Movement")]
     public float moveSpeed;
+    public float swingSpeed;
 
     private LineRenderer LRLeft, LRRight;
 
@@ -36,6 +37,7 @@ public class Movement : MonoBehaviour
     public float playerHeight;
     public LayerMask Ground;
     bool grounded;
+    bool swinging;
 
     public Transform orientation;
 
@@ -63,6 +65,7 @@ public class Movement : MonoBehaviour
     {
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, Ground);
+
 
         MyInput();
         SpeedControl();
@@ -162,6 +165,11 @@ public class Movement : MonoBehaviour
         // in air
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        if (swinging)
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * swingSpeed, ForceMode.Force);
+
+        
     }
 
     private void SpeedControl()
@@ -211,7 +219,7 @@ public class Movement : MonoBehaviour
     {
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 20f, Color.blue, 3);
         RaycastHit hit;
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance, Webbable))
+
         {
 
             webbedObject = hit.transform;
@@ -223,8 +231,8 @@ public class Movement : MonoBehaviour
             Web.connectedAnchor = hit.point;
 
 
-            Web.maxDistance = hit.distance * 0.8f;
-            Web.minDistance = hit.distance * 0.25f;
+            Web.maxDistance = hit.distance * 1f;
+            Web.minDistance = hit.distance * 0f;
 
             Web.spring = 4.5f;
             Web.damper = 7f;
@@ -234,6 +242,12 @@ public class Movement : MonoBehaviour
 
             //currentGrapplePosition = WebTip.position;
             return Web;
+
+            if (Camera.main.transform.position.y > hit.point.y )
+            {
+                LR.positionCount = 0;
+                Destroy(Web);
+            }
         }
         return null;
     }

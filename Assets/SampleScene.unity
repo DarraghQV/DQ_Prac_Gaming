@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: a59fe87939f259d40a7ee37624c9568b, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.66102904, g: 0.459383, b: 0.45468062, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -326,7 +326,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 202605940}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -556,7 +556,7 @@ GameObject:
   - component: {fileID: 296818680}
   - component: {fileID: 296818684}
   - component: {fileID: 296818685}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -676,11 +676,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LeftShooterTip: {fileID: 1089148895}
   RightShooterTip: {fileID: 892408334}
-  moveSpeed: 15
+  moveSpeed: 5
+  swingSpeed: 5
   groundDrag: 5
-  jumpForce: 25
+  jumpForce: 40
   jumpCooldown: 0.25
-  airMultiplier: 0.4
+  airMultiplier: 2.5
   walkSpeed: 0
   sprintSpeed: 0
   jumpKey: 32
@@ -702,7 +703,7 @@ GameObject:
   - component: {fileID: 327407965}
   - component: {fileID: 327407964}
   - component: {fileID: 327407966}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CameraHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1243,7 +1244,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 892408334}
-  m_Layer: 0
+  - component: {fileID: 892408335}
+  m_Layer: 2
   m_Name: RWebTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1265,6 +1267,19 @@ Transform:
   m_Father: {fileID: 1742373499}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &892408335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892408333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f28775bd3a05aa4ab7c8b0285a1b1ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grappling: {fileID: 1742373503}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1292,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1380,7 +1395,7 @@ GameObject:
   - component: {fileID: 1016247920}
   - component: {fileID: 1016247923}
   - component: {fileID: 1016247922}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: LWebShooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1482,7 +1497,7 @@ LineRenderer:
   m_GameObject: {fileID: 1016247915}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 0
@@ -1519,7 +1534,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1537,8 +1552,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.4716981, g: 0.46502313, b: 0.46502313, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.8113208, g: 0.8074938, b: 0.8074938, a: 1}
+      key1: {r: 0.8113208, g: 0.8074938, b: 0.8074938, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1678,7 +1693,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1089148895}
-  m_Layer: 0
+  - component: {fileID: 1089148896}
+  m_Layer: 2
   m_Name: LWebTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1700,6 +1716,19 @@ Transform:
   m_Father: {fileID: 1016247916}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &1089148896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089148894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f28775bd3a05aa4ab7c8b0285a1b1ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grappling: {fileID: 1016247922}
 --- !u!1 &1116186014
 GameObject:
   m_ObjectHideFlags: 0
@@ -1709,7 +1738,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1116186015}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PlayerObj
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1784,7 +1813,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1244168467}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1912,7 +1941,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1359336853}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: RWebPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2159,7 +2188,7 @@ GameObject:
   - component: {fileID: 1742373501}
   - component: {fileID: 1742373504}
   - component: {fileID: 1742373503}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: RWebShooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2261,7 +2290,7 @@ LineRenderer:
   m_GameObject: {fileID: 1742373498}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 0
@@ -2272,7 +2301,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2298,7 +2327,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.5
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -2316,8 +2345,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.5188679, g: 0.5066305, b: 0.5066305, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
+      key1: {r: 0.9245283, g: 0.9245283, b: 0.9245283, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -2458,7 +2487,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2076405414}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: LWebPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
