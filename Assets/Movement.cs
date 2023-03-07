@@ -6,6 +6,7 @@ using TMPro;
 public class Movement : MonoBehaviour
 {
     private float maxDistance = 100f;
+    private Transform webbedObject;
     public Transform LeftShooterTip, RightShooterTip;
     [Header("Movement")]
     public float moveSpeed;
@@ -14,6 +15,9 @@ public class Movement : MonoBehaviour
     private LineRenderer LRLeft, LRRight;
 
     public float groundDrag;
+    public float pullSpeed;
+    public LayerMask Webbable;
+
 
     public float jumpForce;
     public float jumpCooldown;
@@ -26,7 +30,7 @@ public class Movement : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode dashKey = KeyCode.LeftShift;
+    public KeyCode dashKey = KeyCode.R;
 
 
     [Header("Ground Check")]
@@ -53,7 +57,7 @@ public class Movement : MonoBehaviour
 
         readyToJump = true;
 
-        LRLeft =LeftShooterTip.parent.GetComponent<LineRenderer>();
+        LRLeft = LeftShooterTip.parent.GetComponent<LineRenderer>();
         LRRight = RightShooterTip.parent.GetComponent<LineRenderer>();
     }
 
@@ -61,7 +65,7 @@ public class Movement : MonoBehaviour
     {
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, Ground);
-        
+
 
         MyInput();
         SpeedControl();
@@ -73,21 +77,21 @@ public class Movement : MonoBehaviour
             rb.drag = 0;
             rb.AddForce(Vector3.down * 2, ForceMode.Acceleration);
 
-   
-        if (Input.GetKeyDown(KeyCode.E))
+
+        if (Input.GetMouseButtonDown(1))
         {
             rightWeb = StartGrapple(transform, LRRight);
         }
-        else if (Input.GetKeyUp(KeyCode.E))
+        else if (Input.GetMouseButtonUp(1))
         {
             StopGrapple(rightWeb, LRRight);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonDown(0))
         {
             leftWeb = StartGrapple(transform, LRLeft);
         }
-        else if (Input.GetKeyUp(KeyCode.Q))
+        else if (Input.GetMouseButtonUp(0))
         {
             StopGrapple(leftWeb, LRLeft);
         }
@@ -102,6 +106,15 @@ public class Movement : MonoBehaviour
             pullWeb(ref leftWeb);
         }
 
+        if (Input.GetKey(KeyCode.Q))
+        {
+            pullObject(ref leftWeb);
+        }
+
+        if (Input.GetKey(KeyCode.E))
+        {
+            pullObject(ref rightWeb);
+        }
 
         DrawRope(leftWeb, LRLeft);
         DrawRope(rightWeb, LRRight);
@@ -132,6 +145,11 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(sprintKey) && grounded)
         {
             Sprint();
+        }
+
+        if (Input.GetKeyUp(dashKey) && grounded)
+        {
+            Dash();
         }
     }
 
@@ -193,8 +211,7 @@ public class Movement : MonoBehaviour
 
     private void Dash()
     {
-        if (!grounded)
-            rb.AddForce(Vector3.forward * 5, ForceMode.Impulse);
+            rb.AddForce(moveDirection.normalized * 5f * airMultiplier, ForceMode.Impulse);
     }
 
 
@@ -202,8 +219,10 @@ public class Movement : MonoBehaviour
     {
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 20f, Color.blue, 3);
         RaycastHit hit;
-        if (swinging = Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
+
         {
+
+            webbedObject = hit.transform;
 
             //grapplePoint = hit.point;
 
@@ -215,7 +234,7 @@ public class Movement : MonoBehaviour
             Web.maxDistance = hit.distance * 1f;
             Web.minDistance = hit.distance * 0f;
 
-            Web.spring = 2.5f;
+            Web.spring = 4.5f;
             Web.damper = 7f;
             Web.massScale = 4.5f;
 
@@ -238,7 +257,7 @@ public class Movement : MonoBehaviour
     private void pullWeb(ref SpringJoint currentWeb)
     {
         currentWeb.maxDistance *= 0.7f;
-        currentWeb.spring *= 1.01f;
+        currentWeb.spring *= 1.0075f;
 
     }
     void StopGrapple(SpringJoint Web, LineRenderer LR)
@@ -248,6 +267,14 @@ public class Movement : MonoBehaviour
         Destroy(Web);
     }
 
+    void pullObject(ref SpringJoint currentWeb)
+    {
+        if(webbedObject != null)
+        {
+            var pull = pullSpeed * Time.deltaTime;
+            webbedObject.transform.position = Vector3.MoveTowards(webbedObject.transform.position, rb.position, pull);
+        }
+    }
 
     void DrawRope(SpringJoint Web,LineRenderer LR)
     {
