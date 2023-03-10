@@ -75,7 +75,7 @@ public class Movement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
-            rb.AddForce(Vector3.down * 2, ForceMode.Acceleration);
+        rb.AddForce(Vector3.down * 2, ForceMode.Acceleration);
 
 
         if (Input.GetMouseButtonDown(1))
@@ -119,8 +119,8 @@ public class Movement : MonoBehaviour
         DrawRope(leftWeb, LRLeft);
         DrawRope(rightWeb, LRRight);
 
-        
-}
+
+    }
 
     private void FixedUpdate()
     {
@@ -169,7 +169,7 @@ public class Movement : MonoBehaviour
         if (swinging)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * swingSpeed, ForceMode.Force);
 
-        
+
     }
 
     private void SpeedControl()
@@ -207,11 +207,14 @@ public class Movement : MonoBehaviour
         // in air
         else if (!grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 25f * airMultiplier, ForceMode.Force);
+
+        if (swinging)
+            rb.AddForce(moveDirection.normalized * swingSpeed * 10f * airMultiplier, ForceMode.Force);
     }
 
     private void Dash()
     {
-            rb.AddForce(moveDirection.normalized * 5f * airMultiplier, ForceMode.Impulse);
+        rb.AddForce(moveDirection.normalized * 5f * airMultiplier, ForceMode.Impulse);
     }
 
 
@@ -220,22 +223,25 @@ public class Movement : MonoBehaviour
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 20f, Color.blue, 3);
         RaycastHit hit;
 
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
+
         {
 
-            webbedObject = hit.transform;
 
             //grapplePoint = hit.point;
 
             SpringJoint Web = shooter.gameObject.AddComponent<SpringJoint>();
             Web.autoConfigureConnectedAnchor = false;
             Web.connectedAnchor = hit.point;
+            webbedObject = hit.transform;
+
 
 
             Web.maxDistance = hit.distance * 1f;
             Web.minDistance = hit.distance * 0f;
 
             Web.spring = 4.5f;
-            Web.damper = 7f;
+            Web.damper = 1f;
             Web.massScale = 4.5f;
 
             LR.positionCount = 2;
@@ -243,13 +249,9 @@ public class Movement : MonoBehaviour
             //currentGrapplePosition = WebTip.position;
             return Web;
 
-            if (Camera.main.transform.position.y > hit.point.y )
-            {
-                LR.positionCount = 0;
-                Destroy(Web);
-            }
         }
         return null;
+
     }
 
 
