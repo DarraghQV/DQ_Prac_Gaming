@@ -25,18 +25,7 @@ public class Grapple : MonoBehaviour
     }
 
 
-
-
-
-
-
-
-
-
-
     private Vector3 currentGrapplePosition;
-
-
 
 
     public bool IsGrappling(SpringJoint Web)

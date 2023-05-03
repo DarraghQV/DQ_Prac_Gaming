@@ -5,49 +5,49 @@ using TMPro;
 
 public class Movement : MonoBehaviour
 {
-    private float maxDistance = 100f;
-    private Transform webbedObject;
-    public Transform LeftShooterTip, RightShooterTip;
     [Header("Movement")]
     public float moveSpeed;
     public float swingSpeed;
-
-    private LineRenderer LRLeft, LRRight;
-
-    public float groundDrag;
     public float pullSpeed;
-    public LayerMask Webbable;
-
-
+    public float grappleForce;
+    public float throwForce;
+    public float airMultiplier;
+    public float groundDrag;
     public float jumpForce;
     public float jumpCooldown;
-    public float airMultiplier;
-    bool readyToJump;
 
-    [HideInInspector] public float walkSpeed;
-    [HideInInspector] public float sprintSpeed;
-
+    
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public KeyCode dashKey = KeyCode.R;
 
-
     [Header("Ground Check")]
-    public float playerHeight;
     public LayerMask Ground;
-    bool grounded;
-    bool swinging;
+    public float playerHeight;
 
     public Transform orientation;
+    public Transform LeftShooterTip;
+    public Transform RightShooterTip;
 
-    float horizontalInput;
-    float verticalInput;
+    [Header("Debug")]
+    public LayerMask Webbable;
 
-    Vector3 moveDirection;
-    Vector3 extragravity;
+    [HideInInspector] public float walkSpeed;
+    [HideInInspector] public float sprintSpeed;
+    [HideInInspector] public bool grounded;
+    [HideInInspector] public bool swinging;
 
-    Rigidbody rb;
+    private float maxDistance = 100f;
+    private float horizontalInput;
+    private float verticalInput;
+    private bool readyToJump;
+    private Vector3 moveDirection;
+    private Vector3 extragravity;
+
+    private Transform webbedObject;
+    private Rigidbody rb;
+    private LineRenderer LRLeft, LRRight;
     private SpringJoint rightWeb, leftWeb;
 
     private void Start()
@@ -63,63 +63,41 @@ public class Movement : MonoBehaviour
 
     private void Update()
     {
-        // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, Ground);
-
 
         MyInput();
         SpeedControl();
 
-        // handle drag
-        if (grounded)
-            rb.drag = groundDrag;
-        else
-            rb.drag = 0;
-        rb.AddForce(Vector3.down * 2, ForceMode.Acceleration);
-
-
         if (Input.GetMouseButtonDown(1))
-        {
             rightWeb = StartGrapple(transform, LRRight);
-        }
         else if (Input.GetMouseButtonUp(1))
-        {
             StopGrapple(rightWeb, LRRight);
-        }
 
         if (Input.GetMouseButtonDown(0))
-        {
             leftWeb = StartGrapple(transform, LRLeft);
-        }
         else if (Input.GetMouseButtonUp(0))
-        {
             StopGrapple(leftWeb, LRLeft);
-        }
 
         if (Input.GetKey(KeyCode.G))
-        {
             pullWeb(ref rightWeb);
-        }
 
         if (Input.GetKey(KeyCode.F))
-        {
             pullWeb(ref leftWeb);
-        }
 
         if (Input.GetKey(KeyCode.Q))
-        {
             pullObject(ref leftWeb);
-        }
 
         if (Input.GetKey(KeyCode.E))
-        {
             pullObject(ref rightWeb);
-        }
+
+        if (Input.GetKey(KeyCode.B))
+            FlingToGrapplePoint(ref rightWeb);
+
+        if (Input.GetKey(KeyCode.O))
+            ThrowWebbedObject(ref leftWeb, throwForce);
 
         DrawRope(leftWeb, LRLeft);
         DrawRope(rightWeb, LRRight);
-
-
     }
 
     private void FixedUpdate()
@@ -240,8 +218,8 @@ public class Movement : MonoBehaviour
             Web.maxDistance = hit.distance * 1f;
             Web.minDistance = hit.distance * 0f;
 
-            Web.spring = 4.5f;
-            Web.damper = 1f;
+            Web.spring = 2.5f;
+            Web.damper = 7f;
             Web.massScale = 4.5f;
 
             LR.positionCount = 2;
@@ -253,8 +231,6 @@ public class Movement : MonoBehaviour
         return null;
 
     }
-
-
 
     private void pullWeb(ref SpringJoint currentWeb)
     {
@@ -283,6 +259,45 @@ public class Movement : MonoBehaviour
         if (!Web) return;
         LR.SetPosition(0, LR.transform.position);
         LR.SetPosition(1, Web.connectedAnchor);
+    }
+
+    public void FlingToGrapplePoint(ref SpringJoint currentWeb)
+    {
+        // Check if a grapple point is currently targeted
+        if (webbedObject != null)
+        {
+            // Calculate the direction from the player to the grapple point
+            Vector3 direction = webbedObject.transform.position - transform.position;
+            direction.Normalize();
+
+            // Calculate the force to apply to the player
+            float force = grappleForce;
+
+            // Apply the force in the calculated direction
+            rb.AddForce(direction * force, ForceMode.Impulse);
+        }
+    }
+
+    public void ThrowWebbedObject(ref SpringJoint currentweb, float throwForce)
+    {
+        // Check if there is an object attached to the spring joint
+        if (leftWeb.connectedBody != null)
+        {
+            // Release the spring joint
+            leftWeb.connectedBody = null;
+
+            // Get the direction to throw the object
+            Vector3 throwDirection = transform.forward;
+
+            // Apply force to the rigidbody in the direction of the throw
+            Rigidbody rb = leftWeb.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+            }
+
+            
+        }
     }
 
 }
